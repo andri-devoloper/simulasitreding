@@ -19,9 +19,16 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ message: "Config saved", data: config });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return NextResponse.json(
+        { error: error.message || "Failed to save config" },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json(
-      { error: error.message || "Failed to save config" },
+      { error: "Unknown error occurred" },
       { status: 500 }
     );
   }
